@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Учет обуви</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <h1>Учет сезонной обуви</h1>
+        <p>Храни пары по схеме: обувь -> коробка -> место</p>
+        <div id="configBadge" class="badge">Проверка OpenRouter...</div>
+      </header>
+
+      <section class="card">
+        <h2>Сложить обувь</h2>
+        <form id="storeForm">
+          <label>Название пары
+            <input type="text" id="shoeName" placeholder="Например: Nike зимние кроссовки" />
+          </label>
+
+          <label>Фото обуви
+            <input type="file" id="shoePhoto" accept="image/*" capture="environment" required />
+          </label>
+          <div class="preview-wrap">
+            <img id="shoePreview" class="preview-image" alt="Превью обуви" hidden />
+          </div>
+          <button type="button" id="analyzeShoe" class="ai-btn">AI: распознать обувь</button>
+
+          <div class="grid2">
+            <label>Сезон
+              <select id="season" required>
+                <option value="">Выберите</option>
+                <option value="зима">зима</option>
+                <option value="весна">весна</option>
+                <option value="лето">лето</option>
+                <option value="осень">осень</option>
+              </select>
+            </label>
+            <label>Тип
+              <input type="text" id="shoeType" placeholder="кроссовки, ботинки, сланцы" required />
+            </label>
+            <label>Цвет
+              <input type="text" id="shoeColor" placeholder="черный" />
+            </label>
+            <label>Пол/стиль
+              <select id="genderStyle">
+                <option value="">Выберите</option>
+                <option value="мужской">мужской</option>
+                <option value="женский">женский</option>
+                <option value="унисекс">унисекс</option>
+              </select>
+            </label>
+          </div>
+
+          <label>Фото коробки
+            <input type="file" id="boxPhoto" accept="image/*" capture="environment" required />
+          </label>
+          <div class="preview-wrap">
+            <img id="boxPreview" class="preview-image" alt="Превью коробки" hidden />
+          </div>
+          <button type="button" id="analyzeBox" class="ai-btn">AI: распознать коробку</button>
+
+          <div class="grid2">
+            <label>Цвет коробки
+              <input type="text" id="boxColor" placeholder="коричневый" />
+            </label>
+            <label>Форма коробки
+              <input type="text" id="boxForm" placeholder="прямоугольная" />
+            </label>
+            <label class="full">Особые признаки
+              <input type="text" id="boxFeatures" placeholder="логотип, наклейка 42, потертости" />
+            </label>
+            <label class="full">Визуальный отпечаток
+              <input type="text" id="boxFingerprint" placeholder="краткое описание для распознавания" />
+            </label>
+          </div>
+          <div class="hint">Для каждой пары создается отдельная коробка (без поиска старых коробок).</div>
+
+          <label>Фото места (опционально)
+            <input type="file" id="locationPhoto" accept="image/*" capture="environment" />
+          </label>
+          <div class="preview-wrap">
+            <img id="locationPreview" class="preview-image" alt="Превью места" hidden />
+          </div>
+          <button type="button" id="analyzeLocation" class="ai-btn">AI: распознать место</button>
+
+          <div class="grid2">
+            <label>Зона
+              <input type="text" id="zone" placeholder="кладовка" required />
+            </label>
+            <label>Место
+              <input type="text" id="spot" placeholder="верхняя полка" required />
+            </label>
+          </div>
+
+          <button type="submit" class="primary">Сохранить</button>
+          <p id="storeStatus" class="status"></p>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Найти обувь</h2>
+        <form id="searchForm" class="search">
+          <input id="searchQuery" type="text" placeholder="Например: зимние кроссовки" />
+          <select id="searchSeason">
+            <option value="">Любой сезон</option>
+            <option value="зима">зима</option>
+            <option value="весна">весна</option>
+            <option value="лето">лето</option>
+            <option value="осень">осень</option>
+          </select>
+          <button type="submit">Поиск</button>
+        </form>
+        <div id="results" class="results"></div>
+      </section>
+    </main>
+
+    <template id="resultItemTpl">
+      <article class="result-item">
+        <div class="thumbs">
+          <img class="shoe-img" alt="Фото обуви" />
+          <img class="box-img" alt="Фото коробки" />
+        </div>
+        <div class="result-text"></div>
+        <div class="result-actions"></div>
+      </article>
+    </template>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
