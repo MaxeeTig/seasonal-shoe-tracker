@@ -204,6 +204,32 @@ button:disabled {
   gap: 12px;
 }
 
+.photo-picker-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.photo-picker-btn {
+  min-height: 44px;
+  border: 1px solid var(--brand);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--brand);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px;
+  width: 100%;
+  margin-top: 0;
+}
+
+.photo-picker-btn:hover {
+  background: var(--brand);
+  color: #fff;
+}
+
 .preview-wrap {
   margin: 6px 0 12px;
 }

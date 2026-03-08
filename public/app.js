@@ -1,4 +1,5 @@
 const $ = (id) => document.getElementById(id);
+const selectedFiles = {};
 
 async function fileToDataUrl(file) {
   if (!file) return "";
@@ -8,6 +9,10 @@ async function fileToDataUrl(file) {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
+
+function getSelectedFile(logicalId) {
+  return selectedFiles[logicalId] || null;
 }
 
 function parseFeatures(text) {
@@ -79,8 +84,8 @@ function fillLocationFields(data) {
   $("spot").value = data.spot || $("spot").value;
 }
 
-async function analyze(objectType, fileInputId) {
-  const file = $(fileInputId).files[0];
+async function analyze(objectType, logicalId) {
+  const file = getSelectedFile(logicalId);
   if (!file) throw new Error("Сначала выберите фото");
   const imageData = await fileToDataUrl(file);
   return api("/api/ai/analyze", {
@@ -89,21 +94,27 @@ async function analyze(objectType, fileInputId) {
   });
 }
 
-function wireImagePreview(fileInputId, imgId) {
-  const input = $(fileInputId);
+function wirePhotoPicker(logicalId, cameraId, imgId) {
+  const fileInput = $(logicalId);
+  const cameraInput = $(cameraId);
   const img = $(imgId);
-  if (!input || !img) return;
+  if (!fileInput || !cameraInput || !img) return;
 
-  input.addEventListener("change", async () => {
+  function handleFile(input) {
     const file = input.files[0];
-    if (!file) {
-      img.src = "";
-      img.hidden = true;
-      return;
-    }
-    const dataUrl = await fileToDataUrl(file);
-    img.src = dataUrl;
-    img.hidden = false;
+    if (!file) return;
+    selectedFiles[logicalId] = file;
+    fileToDataUrl(file).then((url) => {
+      img.src = url;
+      img.hidden = false;
+    });
+  }
+
+  fileInput.addEventListener("change", () => handleFile(fileInput));
+  cameraInput.addEventListener("change", () => handleFile(cameraInput));
+
+  document.querySelectorAll(`[data-trigger="${logicalId}"], [data-trigger="${cameraId}"]`).forEach((btn) => {
+    btn.addEventListener("click", () => $(btn.dataset.trigger).click());
   });
 }
 
@@ -112,9 +123,9 @@ async function saveStoreFlow(event) {
   setStatus("Сохранение...");
 
   try {
-    const shoePhoto = await fileToDataUrl($("shoePhoto").files[0]);
-    const boxPhoto = await fileToDataUrl($("boxPhoto").files[0]);
-    const locationPhoto = await fileToDataUrl($("locationPhoto").files[0]);
+    const shoePhoto = await fileToDataUrl(getSelectedFile("shoePhoto"));
+    const boxPhoto = await fileToDataUrl(getSelectedFile("boxPhoto"));
+    const locationPhoto = await fileToDataUrl(getSelectedFile("locationPhoto"));
 
     const locationRes = await api("/api/locations", {
       method: "POST",
@@ -154,6 +165,9 @@ async function saveStoreFlow(event) {
 
     setStatus(`Сохранено: пара #${shoeRes.id}`);
     $("storeForm").reset();
+    delete selectedFiles["shoePhoto"];
+    delete selectedFiles["boxPhoto"];
+    delete selectedFiles["locationPhoto"];
     $("shoePreview").hidden = true;
     $("boxPreview").hidden = true;
     $("locationPreview").hidden = true;
@@ -309,8 +323,6 @@ $("analyzeLocation").addEventListener("click", async () => {
   setAiButtonLoading("analyzeLocation", true, "AI: распознать место");
   setStatus("Распознавание места...");
   try {
-    const file = $("locationPhoto").files[0];
-    if (!file) throw new Error("Сначала выберите фото места");
     const res = await analyze("location", "locationPhoto");
     fillLocationFields(res.data);
     setStatus("Место распознано. Проверьте зону и место.");
@@ -323,9 +335,9 @@ $("analyzeLocation").addEventListener("click", async () => {
 
 $("storeForm").addEventListener("submit", saveStoreFlow);
 $("searchForm").addEventListener("submit", runSearch);
-wireImagePreview("shoePhoto", "shoePreview");
-wireImagePreview("boxPhoto", "boxPreview");
-wireImagePreview("locationPhoto", "locationPreview");
+wirePhotoPicker("shoePhoto", "shoePhotoCamera", "shoePreview");
+wirePhotoPicker("boxPhoto", "boxPhotoCamera", "boxPreview");
+wirePhotoPicker("locationPhoto", "locationPhotoCamera", "locationPreview");
 
 initTabs();
 loadConfig();

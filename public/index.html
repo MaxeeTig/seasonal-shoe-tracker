@@ -40,9 +40,13 @@
               <p>Загрузите фото и заполните данные об обуви.</p>
             </header>
             <div class="card-content">
-              <label>Фото обуви *
-                <input type="file" id="shoePhoto" accept="image/*" capture="environment" required />
-              </label>
+              <label>Фото обуви *</label>
+              <input type="file" id="shoePhoto" accept="image/*" hidden />
+              <input type="file" id="shoePhotoCamera" accept="image/*" capture="environment" hidden />
+              <div class="photo-picker-row">
+                <button type="button" class="photo-picker-btn" data-trigger="shoePhotoCamera">Камера</button>
+                <button type="button" class="photo-picker-btn" data-trigger="shoePhoto">Файл</button>
+              </div>
               <div class="preview-wrap">
                 <img id="shoePreview" class="preview-image" alt="Превью обуви" hidden />
               </div>
@@ -85,9 +89,13 @@
               <p>Загрузите фото и опишите коробку для хранения.</p>
             </header>
             <div class="card-content">
-              <label>Фото коробки *
-                <input type="file" id="boxPhoto" accept="image/*" capture="environment" required />
-              </label>
+              <label>Фото коробки *</label>
+              <input type="file" id="boxPhoto" accept="image/*" hidden />
+              <input type="file" id="boxPhotoCamera" accept="image/*" capture="environment" hidden />
+              <div class="photo-picker-row">
+                <button type="button" class="photo-picker-btn" data-trigger="boxPhotoCamera">Камера</button>
+                <button type="button" class="photo-picker-btn" data-trigger="boxPhoto">Файл</button>
+              </div>
               <div class="preview-wrap">
                 <img id="boxPreview" class="preview-image" alt="Превью коробки" hidden />
               </div>
@@ -116,9 +124,13 @@
               <p>Укажите, где будет храниться коробка.</p>
             </header>
             <div class="card-content">
-              <label>Фото места (опционально)
-                <input type="file" id="locationPhoto" accept="image/*" capture="environment" />
-              </label>
+              <label>Фото места (опционально)</label>
+              <input type="file" id="locationPhoto" accept="image/*" hidden />
+              <input type="file" id="locationPhotoCamera" accept="image/*" capture="environment" hidden />
+              <div class="photo-picker-row">
+                <button type="button" class="photo-picker-btn" data-trigger="locationPhotoCamera">Камера</button>
+                <button type="button" class="photo-picker-btn" data-trigger="locationPhoto">Файл</button>
+              </div>
               <div class="preview-wrap">
                 <img id="locationPreview" class="preview-image" alt="Превью места" hidden />
               </div>
