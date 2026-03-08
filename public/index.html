@@ -3,117 +3,177 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Учет обуви</title>
+    <title>Хранение обуви</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <main class="app">
-      <header class="hero">
-        <h1>Учет сезонной обуви</h1>
-        <p>Храни пары по схеме: обувь -> коробка -> место</p>
-        <div id="configBadge" class="badge">Проверка OpenRouter...</div>
-      </header>
+    <header class="app-header">
+      <div class="container header-inner">
+        <div class="brand-icon" aria-hidden="true">□</div>
+        <div>
+          <h1>Хранение обуви</h1>
+          <p>Сезонное хранение</p>
+        </div>
+      </div>
+    </header>
 
-      <section class="card">
-        <h2>Сложить обувь</h2>
-        <form id="storeForm">
-          <label>Название пары
-            <input type="text" id="shoeName" placeholder="Например: Nike зимние кроссовки" />
-          </label>
+    <main class="container app-main">
+      <div class="tabs" role="tablist" aria-label="Разделы">
+        <button type="button" class="tab-trigger is-active" data-tab-target="store" role="tab" aria-selected="true">
+          Сложить обувь
+        </button>
+        <button type="button" class="tab-trigger" data-tab-target="find" role="tab" aria-selected="false">
+          Найти обувь
+        </button>
+      </div>
 
-          <label>Фото обуви
-            <input type="file" id="shoePhoto" accept="image/*" capture="environment" required />
-          </label>
-          <div class="preview-wrap">
-            <img id="shoePreview" class="preview-image" alt="Превью обуви" hidden />
+      <section class="tab-panel is-active" data-tab-panel="store" role="tabpanel">
+        <div class="alert alert-info">
+          Каждая пара обуви хранится в отдельной коробке. Заполните данные о паре, коробке и месте хранения.
+        </div>
+        <div id="configBadge" class="chip">Проверка OpenRouter...</div>
+
+        <form id="storeForm" class="stack-lg">
+          <article class="card">
+            <header class="card-header">
+              <h2>Информация об обуви</h2>
+              <p>Загрузите фото и заполните данные об обуви.</p>
+            </header>
+            <div class="card-content">
+              <label>Фото обуви *
+                <input type="file" id="shoePhoto" accept="image/*" capture="environment" required />
+              </label>
+              <div class="preview-wrap">
+                <img id="shoePreview" class="preview-image" alt="Превью обуви" hidden />
+              </div>
+              <button type="button" id="analyzeShoe" class="primary">AI: распознать обувь</button>
+
+              <div class="grid2">
+                <label>Название пары *
+                  <input type="text" id="shoeName" placeholder="Например: зимние кроссовки" />
+                </label>
+                <label>Сезон *
+                  <select id="season" required>
+                    <option value="">Выберите сезон</option>
+                    <option value="зима">Зима</option>
+                    <option value="весна">Весна</option>
+                    <option value="лето">Лето</option>
+                    <option value="осень">Осень</option>
+                  </select>
+                </label>
+                <label>Тип обуви *
+                  <input type="text" id="shoeType" placeholder="Например: кроссовки" required />
+                </label>
+                <label>Цвет
+                  <input type="text" id="shoeColor" placeholder="Например: черный" />
+                </label>
+                <label>Пол/стиль
+                  <select id="genderStyle">
+                    <option value="">Выберите</option>
+                    <option value="мужской">Мужской</option>
+                    <option value="женский">Женский</option>
+                    <option value="унисекс">Унисекс</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <header class="card-header">
+              <h2>Информация о коробке</h2>
+              <p>Загрузите фото и опишите коробку для хранения.</p>
+            </header>
+            <div class="card-content">
+              <label>Фото коробки *
+                <input type="file" id="boxPhoto" accept="image/*" capture="environment" required />
+              </label>
+              <div class="preview-wrap">
+                <img id="boxPreview" class="preview-image" alt="Превью коробки" hidden />
+              </div>
+              <button type="button" id="analyzeBox" class="primary">AI: распознать коробку</button>
+
+              <div class="grid2">
+                <label>Цвет коробки
+                  <input type="text" id="boxColor" placeholder="Например: коричневый" />
+                </label>
+                <label>Форма коробки
+                  <input type="text" id="boxForm" placeholder="Например: прямоугольная" />
+                </label>
+                <label>Особые признаки
+                  <input type="text" id="boxFeatures" placeholder="Наклейка, надпись, метка" />
+                </label>
+                <label>Визуальный отпечаток
+                  <input type="text" id="boxFingerprint" placeholder="Уникальный код" />
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <header class="card-header">
+              <h2>Место хранения</h2>
+              <p>Укажите, где будет храниться коробка.</p>
+            </header>
+            <div class="card-content">
+              <label>Фото места (опционально)
+                <input type="file" id="locationPhoto" accept="image/*" capture="environment" />
+              </label>
+              <div class="preview-wrap">
+                <img id="locationPreview" class="preview-image" alt="Превью места" hidden />
+              </div>
+              <button type="button" id="analyzeLocation" class="primary">AI: распознать место</button>
+
+              <div class="grid2">
+                <label>Зона *
+                  <input type="text" id="zone" placeholder="Например: кладовка" required />
+                </label>
+                <label>Место *
+                  <input type="text" id="spot" placeholder="Например: верхняя полка" required />
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <p id="storeStatus" class="alert" hidden></p>
+
+          <div class="save-bar">
+            <button type="submit" class="primary large">Сохранить</button>
           </div>
-          <button type="button" id="analyzeShoe" class="ai-btn">AI: распознать обувь</button>
-
-          <div class="grid2">
-            <label>Сезон
-              <select id="season" required>
-                <option value="">Выберите</option>
-                <option value="зима">зима</option>
-                <option value="весна">весна</option>
-                <option value="лето">лето</option>
-                <option value="осень">осень</option>
-              </select>
-            </label>
-            <label>Тип
-              <input type="text" id="shoeType" placeholder="кроссовки, ботинки, сланцы" required />
-            </label>
-            <label>Цвет
-              <input type="text" id="shoeColor" placeholder="черный" />
-            </label>
-            <label>Пол/стиль
-              <select id="genderStyle">
-                <option value="">Выберите</option>
-                <option value="мужской">мужской</option>
-                <option value="женский">женский</option>
-                <option value="унисекс">унисекс</option>
-              </select>
-            </label>
-          </div>
-
-          <label>Фото коробки
-            <input type="file" id="boxPhoto" accept="image/*" capture="environment" required />
-          </label>
-          <div class="preview-wrap">
-            <img id="boxPreview" class="preview-image" alt="Превью коробки" hidden />
-          </div>
-          <button type="button" id="analyzeBox" class="ai-btn">AI: распознать коробку</button>
-
-          <div class="grid2">
-            <label>Цвет коробки
-              <input type="text" id="boxColor" placeholder="коричневый" />
-            </label>
-            <label>Форма коробки
-              <input type="text" id="boxForm" placeholder="прямоугольная" />
-            </label>
-            <label class="full">Особые признаки
-              <input type="text" id="boxFeatures" placeholder="логотип, наклейка 42, потертости" />
-            </label>
-            <label class="full">Визуальный отпечаток
-              <input type="text" id="boxFingerprint" placeholder="краткое описание для распознавания" />
-            </label>
-          </div>
-          <div class="hint">Для каждой пары создается отдельная коробка (без поиска старых коробок).</div>
-
-          <label>Фото места (опционально)
-            <input type="file" id="locationPhoto" accept="image/*" capture="environment" />
-          </label>
-          <div class="preview-wrap">
-            <img id="locationPreview" class="preview-image" alt="Превью места" hidden />
-          </div>
-          <button type="button" id="analyzeLocation" class="ai-btn">AI: распознать место</button>
-
-          <div class="grid2">
-            <label>Зона
-              <input type="text" id="zone" placeholder="кладовка" required />
-            </label>
-            <label>Место
-              <input type="text" id="spot" placeholder="верхняя полка" required />
-            </label>
-          </div>
-
-          <button type="submit" class="primary">Сохранить</button>
-          <p id="storeStatus" class="status"></p>
         </form>
       </section>
 
-      <section class="card">
-        <h2>Найти обувь</h2>
-        <form id="searchForm" class="search">
-          <input id="searchQuery" type="text" placeholder="Например: зимние кроссовки" />
-          <select id="searchSeason">
-            <option value="">Любой сезон</option>
-            <option value="зима">зима</option>
-            <option value="весна">весна</option>
-            <option value="лето">лето</option>
-            <option value="осень">осень</option>
-          </select>
-          <button type="submit">Поиск</button>
-        </form>
+      <section class="tab-panel" data-tab-panel="find" role="tabpanel" hidden>
+        <article class="card">
+          <header class="card-header">
+            <h2>Поиск обуви</h2>
+            <p>Найдите обувь по названию, типу или цвету.</p>
+          </header>
+          <div class="card-content">
+            <form id="searchForm" class="stack-md">
+              <label>Поисковый запрос
+                <input id="searchQuery" type="text" placeholder="Например: зимние кроссовки" />
+              </label>
+
+              <label>Сезон (опционально)
+                <select id="searchSeason">
+                  <option value="">Все сезоны</option>
+                  <option value="зима">Зима</option>
+                  <option value="весна">Весна</option>
+                  <option value="лето">Лето</option>
+                  <option value="осень">Осень</option>
+                </select>
+              </label>
+
+              <button type="submit" class="primary">Поиск</button>
+            </form>
+          </div>
+        </article>
+
+        <div class="results-head">
+          <h2>Результаты поиска</h2>
+          <span id="resultsCount" class="chip" hidden></span>
+        </div>
         <div id="results" class="results"></div>
       </section>
     </main>
@@ -121,8 +181,14 @@
     <template id="resultItemTpl">
       <article class="result-item">
         <div class="thumbs">
-          <img class="shoe-img" alt="Фото обуви" />
-          <img class="box-img" alt="Фото коробки" />
+          <div>
+            <img class="shoe-img" alt="Фото обуви" />
+            <p>Обувь</p>
+          </div>
+          <div>
+            <img class="box-img" alt="Фото коробки" />
+            <p>Коробка</p>
+          </div>
         </div>
         <div class="result-text"></div>
         <div class="result-actions"></div>

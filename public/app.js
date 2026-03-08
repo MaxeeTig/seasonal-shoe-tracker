@@ -18,7 +18,20 @@ function parseFeatures(text) {
 }
 
 function setStatus(text) {
-  $("storeStatus").textContent = text;
+  const status = $("storeStatus");
+  status.textContent = text;
+  status.hidden = !text;
+  status.classList.remove("alert-work", "alert-ok", "alert-error");
+  if (!text) return;
+  if (text.startsWith("Ошибка")) {
+    status.classList.add("alert-error");
+    return;
+  }
+  if (text.startsWith("Сохранено")) {
+    status.classList.add("alert-ok");
+    return;
+  }
+  status.classList.add("alert-work");
 }
 
 function setAiButtonLoading(buttonId, isLoading, baseLabel) {
@@ -165,10 +178,16 @@ async function runSearch(event) {
 
 function renderResults(items) {
   const root = $("results");
+  const counter = $("resultsCount");
   root.innerHTML = "";
 
+  if (counter) {
+    counter.hidden = false;
+    counter.textContent = `${items.length} ${items.length === 1 ? "пара" : "пар"}`;
+  }
+
   if (!items.length) {
-    root.innerHTML = "<p>Ничего не найдено</p>";
+    root.innerHTML = "<div class=\"empty\">Обувь не найдена. Попробуйте изменить запрос.</div>";
     return;
   }
 
@@ -187,14 +206,19 @@ function renderResults(items) {
 
     const title = item.name || `${item.season} ${item.type}`;
     text.innerHTML = `
-      <strong>${title}</strong><br />
-      Сезон: ${item.season} | Тип: ${item.type} | Статус: ${item.status}<br />
-      Место: <strong>${item.zone} -> ${item.spot}</strong><br />
-      Коробка: #${item.box_id}
+      <strong>${title}</strong>
+      <div class="result-meta">
+        <span class="badge">${item.season}</span>
+        <span class="badge">${item.type}</span>
+        <span class="badge">${item.status}</span>
+      </div>
+      <div>Место: <strong>${item.zone} -> ${item.spot}</strong></div>
+      <div>Коробка: #${item.box_id}</div>
     `;
 
     const retrieveBtn = document.createElement("button");
     retrieveBtn.textContent = "Взял обувь";
+    retrieveBtn.className = "primary";
     retrieveBtn.onclick = async () => {
       await api(`/api/shoe-pairs/${item.id}/retrieve`, { method: "POST", body: "{}" });
       await runSearch();
@@ -202,6 +226,7 @@ function renderResults(items) {
 
     const storeBtn = document.createElement("button");
     storeBtn.textContent = "Вернул на хранение";
+    storeBtn.className = item.status === "хранится" ? "" : "primary";
     storeBtn.onclick = async () => {
       await api(`/api/shoe-pairs/${item.id}/store`, { method: "POST", body: "{}" });
       await runSearch();
@@ -225,6 +250,31 @@ async function loadConfig() {
   } catch {
     badge.textContent = "Не удалось получить конфиг";
   }
+}
+
+function initTabs() {
+  const triggers = document.querySelectorAll(".tab-trigger");
+  const panels = document.querySelectorAll(".tab-panel");
+  if (!triggers.length || !panels.length) return;
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      const target = trigger.dataset.tabTarget;
+      if (!target) return;
+
+      triggers.forEach((btn) => {
+        const active = btn === trigger;
+        btn.classList.toggle("is-active", active);
+        btn.setAttribute("aria-selected", active ? "true" : "false");
+      });
+
+      panels.forEach((panel) => {
+        const active = panel.dataset.tabPanel === target;
+        panel.classList.toggle("is-active", active);
+        panel.hidden = !active;
+      });
+    });
+  });
 }
 
 $("analyzeShoe").addEventListener("click", async () => {
@@ -277,5 +327,6 @@ wireImagePreview("shoePhoto", "shoePreview");
 wireImagePreview("boxPhoto", "boxPreview");
 wireImagePreview("locationPhoto", "locationPreview");
 
+initTabs();
 loadConfig();
 runSearch();

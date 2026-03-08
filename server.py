@@ -3,11 +3,9 @@ import json
 import os
 import re
 import sqlite3
-import time
 import urllib.error
 import urllib.request
 from datetime import datetime
-from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
